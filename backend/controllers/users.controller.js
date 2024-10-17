@@ -91,7 +91,8 @@ const loginUsers = async (req, res) => {
 
     if (!user) {
       return res.status(404).send({
-        status: 404,
+        code: 404,
+        status: "Failed",
         message: "User not found",
       });
     }
@@ -99,7 +100,8 @@ const loginUsers = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.us_password);
     if (!isPasswordValid) {
       return res.status(401).send({
-        status: 401,
+        code: 401,
+        status: "Failed",
         message: "Invalid password",
       });
     }
@@ -109,11 +111,12 @@ const loginUsers = async (req, res) => {
     user.dataValues.token = loginToken;
     const options = {
       expires: new Date(Number(new Date()) + 24 * 60 * 60 * 1000),
-      httpOnly: true,
+      httpOnly: false,
     };
-    return res.cookie("user", user, options).status(200).send({
-      status: "succes",
+    return res.cookie("user", JSON.stringify(user), options).status(200).send({
       code: 200,
+      status: "succes",
+      message: "Login success",
       data: user,
     });
   } catch (error) {
