@@ -12,12 +12,22 @@ const {
   updateIsDeleteCoursesSchedule,
   deleteCourseSchedule,
 } = require("@/controllers/courses.controller");
+const {
+  checkDuplicates,
+  bodyvalidation,
+} = require("@/validations/courses.validation");
 const { upload } = require("@/controllers/file");
 
 router.get("/", getAllCourses);
 router.get("/:id", getCourseById);
-router.post("/", upload.single("image"), createCourses);
-router.put("/:id", upload.single("image"), updateCourses);
+router.post(
+  "/",
+  upload.single("image"),
+  bodyvalidation,
+  checkDuplicates,
+  createCourses
+);
+router.put("/:id", upload.single("image"), checkDuplicates, updateCourses);
 router.patch("/:id", updateIsDeleteCourses);
 router.delete("/:id", deleteCourses);
 router.post("/course-schedule", addCourseSchedule);

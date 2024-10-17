@@ -9,6 +9,7 @@ const coursesRouter = require("@/routes/courses.route");
 const schedulesRouter = require("@/routes/schedules.route");
 const cors = require("cors");
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
     credentials: true,

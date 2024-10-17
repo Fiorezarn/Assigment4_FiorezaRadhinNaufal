@@ -108,6 +108,7 @@ const findScheduleCourseById = async (id) => {
 const createCourses = async (req, res) => {
   try {
     const { name, code, price, desc } = req.body;
+    console.log(req.file);
     let image = req.file.path;
     let newImage = image.split("\\");
     newImage.shift();
@@ -124,6 +125,8 @@ const createCourses = async (req, res) => {
 
     return successResponseData(res, "Create Courses Succes!", newCourses, 201);
   } catch (error) {
+    console.log(error);
+
     return errorServerResponse(res, error.message, 500);
   }
 };
