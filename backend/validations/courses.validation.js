@@ -6,8 +6,6 @@ const {
 } = require("@/helpers/responseHelpers");
 
 const bodyvalidation = async (req, res, next) => {
-  console.log(req.body);
-  console.log("test");
   const schema = Joi.object({
     name: Joi.string().required(),
     code: Joi.string().required(),

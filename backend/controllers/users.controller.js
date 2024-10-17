@@ -128,7 +128,7 @@ const registerCourse = async (req, res) => {
       uc_us_id: userId,
       uc_cr_id: courseId,
     });
-    return successResponseData(res, "Success create new user!", newCourse, 201);
+    return successResponseData(res, "Success Register Course!", newCourse, 201);
   } catch (error) {
     return errorServerResponse(res, error.message, 500);
   }

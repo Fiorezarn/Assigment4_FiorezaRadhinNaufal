@@ -22,7 +22,11 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      sc_date: {
+      sc_start_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      sc_end_date: {
         type: DataTypes.DATE,
         allowNull: false,
       },

@@ -46,9 +46,10 @@ const getByIdSchedules = async (req, res) => {
 
 const createSchedules = async (req, res) => {
   try {
-    const { date, location } = req.body;
+    const { startDate, endDate, location } = req.body;
     const newSchedules = await Schedules.create({
-      sc_date: date,
+      sc_start_date: startDate,
+      sc_end_date: endDate,
       sc_location: location,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -68,14 +69,15 @@ const createSchedules = async (req, res) => {
 const updateSchedule = async (req, res) => {
   try {
     const { id } = req.params;
-    const { date, location } = req.body;
+    const { startDate, endDate, location } = req.body;
     const scheduleData = await findByIdSchedules(id);
     if (!scheduleData) {
       return errorClientResponse(res, `Schedule with id ${id} not found!`, 404);
     }
     await Schedules.update(
       {
-        sc_date: date,
+        sc_start_date: startDate,
+        sc_end_date: endDate,
         sc_location: location,
         updatedAt: new Date(),
       },

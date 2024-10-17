@@ -8,11 +8,15 @@ const {
   updateSchedule,
   updateIsDeleteSchedules,
 } = require("@/controllers/schedules.controller");
+const {
+  bodyvalidation,
+  checkDuplicates,
+} = require("@/validations/schedules.validation");
 
 router.get("/", getAllSchedules);
 router.get("/:id", getByIdSchedules);
-router.post("/", createSchedules);
-router.put("/:id", updateSchedule);
+router.post("/", bodyvalidation, checkDuplicates, createSchedules);
+router.put("/:id", bodyvalidation, checkDuplicates, updateSchedule);
 router.patch("/:id", updateIsDeleteSchedules);
 router.delete("/:id", deleteSchedules);
 

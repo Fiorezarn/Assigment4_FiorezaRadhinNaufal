@@ -10,14 +10,25 @@ const {
   updateUsers,
   deleteUser,
 } = require("@/controllers/users.controller");
+const {
+  bodyvalidationUsers,
+  bodyValidationUsersCourse,
+  checkRegisterCourse,
+  checkDuplicates,
+} = require("@/validations/users.validation");
 
 router.get("/", getAllUsers);
 router.get("/:id", getAllUsersById);
 router.patch("/:id", updateisDeleteUser);
-router.put("/:id", updateUsers);
-router.post("/register", registerUsers);
+router.put("/:id", bodyvalidationUsers, checkDuplicates, updateUsers);
+router.post("/register", bodyvalidationUsers, checkDuplicates, registerUsers);
 router.post("/login", loginUsers);
-router.post("/register-course", registerCourse);
+router.post(
+  "/register-course",
+  bodyValidationUsersCourse,
+  checkRegisterCourse,
+  registerCourse
+);
 router.delete("/:id", deleteUser);
 
 module.exports = router;
