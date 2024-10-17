@@ -14,6 +14,8 @@ module.exports = {
           model: "Courses",
           key: "cr_id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       cs_sc_id: {
         type: Sequelize.INTEGER,
@@ -21,6 +23,13 @@ module.exports = {
           model: "Schedules",
           key: "sc_id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     });
   },

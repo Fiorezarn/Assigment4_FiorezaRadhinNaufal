@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
       uc_cr_id: {
         type: DataTypes.INTEGER,
       },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

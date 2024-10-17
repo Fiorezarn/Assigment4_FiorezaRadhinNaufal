@@ -5,8 +5,6 @@ const {
   errorServerResponse,
   errorClientResponse,
 } = require("@/helpers/responseHelpers");
-const { get } = require("../routes/courses.route");
-const { where } = require("sequelize");
 
 const getAllCourses = async (req, res) => {
   try {
@@ -40,7 +38,7 @@ const getAllCourses = async (req, res) => {
   }
 };
 
-const findById = async (id) => {
+const findByIdCourse = async (id) => {
   try {
     const courses = await Courses.findOne({
       where: { cr_id: id },
@@ -54,7 +52,7 @@ const findById = async (id) => {
 const getCourseById = async (req, res) => {
   try {
     const { id } = req.params;
-    const courses = await findById(id);
+    const courses = await findByIdCourse(id);
     if (!courses) {
       return errorClientResponse(res, "Courses not found", 404);
     }
@@ -124,16 +122,9 @@ const createCourses = async (req, res) => {
       updatedAt: new Date(),
     });
 
-    return res.status(201).send({
-      status: 201,
-      message: "Create Courses Succes!",
-      newCourses,
-    });
+    return successResponseData(res, "Create Courses Succes!", newCourses, 201);
   } catch (error) {
-    return res.status(500).send({
-      status: 500,
-      message: error.message,
-    });
+    return errorServerResponse(res, error.message, 500);
   }
 };
 
@@ -176,12 +167,7 @@ const changeScheduleCourse = async (req, res) => {
       }
     );
 
-    return successResponseData(
-      res,
-      "Update Schedule Course Succes!",
-      scheduleCourse,
-      200
-    );
+    return successResponse(res, "Update Schedule Course Succes!", 200);
   } catch (error) {
     return errorServerResponse(res, error.message, 500);
   }
@@ -190,15 +176,12 @@ const changeScheduleCourse = async (req, res) => {
 const updateCourses = async (req, res) => {
   try {
     const { id } = req.params;
-    const course = await findById(id);
+    const course = await findByIdCourse(id);
     const { name, code, price, desc } = req.body;
     const image = req.file.path;
 
     if (!course) {
-      return res.status(404).send({
-        status: 404,
-        message: "Course not found",
-      });
+      return errorClientResponse(res, "Course not found", 404);
     }
 
     await Courses.update(
@@ -215,17 +198,90 @@ const updateCourses = async (req, res) => {
       }
     );
 
-    return res.status(200).send({
-      status: 200,
-      message: "Update Course Succes!",
-    });
+    return successResponse(res, "Update Course Succes!", 200);
   } catch (error) {
-    return res.status(500).send({
-      status: 500,
-      message: error.message,
-    });
+    return errorServerResponse(res, error.message, 500);
   }
 };
+
+const updateIsDeleteCourses = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isDeleted } = req.body;
+    const course = await findByIdCourse(id);
+    if (!course) {
+      return errorClientResponse(res, "Course not found", 404);
+    }
+    await Courses.update(
+      {
+        isDeleted: isDeleted,
+        updatedAt: new Date(),
+      },
+      {
+        where: { cr_id: id },
+      }
+    );
+    return successResponse(res, "Delete Course Succes!", 200);
+  } catch (error) {
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
+const updateIsDeleteCoursesSchedule = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isDeleted } = req.body;
+    const CoursesSchedule = await findScheduleCourseById(id);
+    if (!CoursesSchedule) {
+      return errorClientResponse(res, "Course not found", 404);
+    }
+    await CoursesSchedule.update(
+      {
+        isDeleted: isDeleted,
+        updatedAt: new Date(),
+      },
+      {
+        where: { cs_id: id },
+      }
+    );
+    return successResponse(res, "Delete Course Succes!", 200);
+  } catch (error) {
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
+const deleteCourses = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const course = await findByIdCourse(id);
+    if (!course) {
+      return errorClientResponse(res, "Course not found", 404);
+    }
+    await Courses.destroy({
+      where: { cr_id: id },
+    });
+    return successResponse(res, "Delete Course Succes!", 200);
+  } catch (error) {
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
+const deleteCourseSchedule = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const coursesSchedule = await findScheduleCourseById(id);
+    if (!coursesSchedule) {
+      return errorClientResponse(res, "Course not found", 404);
+    }
+    await CoursesSchedule.destroy({
+      where: { cs_id: id },
+    });
+    return successResponse(res, "Delete Course Succes!", 200);
+  } catch (error) {
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
 module.exports = {
   getAllCourses,
   createCourses,
@@ -233,4 +289,8 @@ module.exports = {
   addCourseSchedule,
   changeScheduleCourse,
   getCourseById,
+  updateIsDeleteCourses,
+  deleteCourses,
+  updateIsDeleteCoursesSchedule,
+  deleteCourseSchedule,
 };

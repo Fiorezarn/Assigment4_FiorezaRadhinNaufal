@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       models.Courses.belongsToMany(models.Users, {
         foreignKey: "uc_us_id",
         through: "userCourses",
-        as: "Users", // Pastikan alias ini juga unik
+        as: "Users",
       });
     }
   }
@@ -49,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
       cr_desc: {
         type: DataTypes.TEXT,
         allowNull: false,
+      },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     },
     {

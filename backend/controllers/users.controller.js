@@ -10,18 +10,21 @@ const {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await Users.findAll();
-
-    return res.status(200).send({
-      status: 200,
-      message: "success",
-      users,
+    const users = await Users.findAll({
+      include: {
+        model: Courses,
+        as: "Courses",
+        through: { attributes: [] },
+        include: {
+          model: Schedules,
+          as: "Schedules",
+          through: { attributes: [] },
+        },
+      },
     });
+    return successResponseData(res, "Success get all data!", users, 200);
   } catch (error) {
-    return res.status(500).send({
-      status: 500,
-      message: error.message,
-    });
+    return errorServerResponse(res, error.message, 500);
   }
 };
 
@@ -33,26 +36,28 @@ const getAllUsersById = async (req, res) => {
         model: Courses,
         as: "Courses",
         through: { attributes: [] },
-        required: true,
         include: {
           model: Schedules,
           as: "Schedules",
           through: { attributes: [] },
-          required: true,
         },
       },
       where: { us_id: id },
     });
-    return res.status(200).send({
-      status: 200,
-      message: "success",
-      user,
-    });
+    return successResponseData(res, "Success get all data!", user, 200);
   } catch (error) {
-    return res.status(500).send({
-      status: 500,
-      message: error.message,
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
+const findByIdUser = async (id) => {
+  try {
+    const user = await Users.findOne({
+      where: { us_id: id },
     });
+    return user;
+  } catch (error) {
+    return errorServerResponse(res, error.message, 500);
   }
 };
 
@@ -67,17 +72,9 @@ const registerUsers = async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
-    return res.status(201).send({
-      status: 201,
-      message: "success",
-      newUser,
-    });
+    return successResponseData(res, "Success create new user!", newUser, 201);
   } catch (error) {
-    return res.status(500).send({
-      status: 500,
-      message: error.message,
-    });
+    return errorServerResponse(res, error.message, 500);
   }
 };
 
@@ -120,11 +117,7 @@ const loginUsers = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).send({
-      status: 500,
-      message: error.message,
-    });
+    return errorServerResponse(res, error.message, 500);
   }
 };
 
@@ -135,16 +128,77 @@ const registerCourse = async (req, res) => {
       uc_us_id: userId,
       uc_cr_id: courseId,
     });
-    return res.status(201).send({
-      status: 201,
-      message: "success",
-      newCourse,
-    });
+    return successResponseData(res, "Success create new user!", newCourse, 201);
   } catch (error) {
-    return res.status(500).send({
-      status: 500,
-      message: error.message,
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
+const updateUsers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fullname, username, email, password } = req.body;
+    const dataUser = await findByIdUser(id);
+    if (!dataUser) {
+      return errorClientResponse(res, "User not found", 404);
+    }
+    await Users.update(
+      {
+        us_fullname: fullname,
+        us_username: username,
+        us_email: email,
+        us_password: await bcrypt.hash(password, 10),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        where: { us_id: id },
+      }
+    );
+    return successResponse(res, "Success update user!");
+  } catch (error) {
+    console.log(error);
+    errorServerResponse(res, error.message, 500);
+  }
+};
+
+const updateisDeleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isDeleted } = req.body;
+    const dataUser = await findByIdUser(id);
+    if (!dataUser) {
+      return errorClientResponse(res, "User not found", 404);
+    }
+    await Users.update(
+      {
+        isDeleted: isDeleted,
+      },
+      {
+        where: { us_id: id },
+      }
+    );
+    return successResponse(res, "Success update user!");
+  } catch (error) {
+    console.log(error);
+
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dataUser = await findByIdUser(id);
+    if (!dataUser) {
+      return errorClientResponse(res, "User not found", 404);
+    }
+    await Users.destroy({
+      where: { us_id: id },
     });
+    return successResponse(res, "Success delete user!");
+  } catch (error) {
+    return errorServerResponse(res, error.message, 500);
   }
 };
 
@@ -154,4 +208,7 @@ module.exports = {
   loginUsers,
   getAllUsersById,
   registerCourse,
+  updateisDeleteUser,
+  deleteUser,
+  updateUsers,
 };

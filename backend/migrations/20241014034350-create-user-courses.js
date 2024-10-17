@@ -14,6 +14,8 @@ module.exports = {
           model: "users",
           key: "us_id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       uc_cr_id: {
         type: Sequelize.INTEGER,
@@ -21,6 +23,13 @@ module.exports = {
           model: "courses",
           key: "cr_id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     });
   },

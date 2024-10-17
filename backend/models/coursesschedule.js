@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
       cs_sc_id: {
         type: DataTypes.INTEGER,
       },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
