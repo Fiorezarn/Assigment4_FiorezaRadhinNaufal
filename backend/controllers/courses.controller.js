@@ -108,7 +108,6 @@ const findScheduleCourseById = async (id) => {
 const createCourses = async (req, res) => {
   try {
     const { name, code, price, desc } = req.body;
-    console.log(req.file);
     let image = req.file.path;
     let newImage = image.split("\\");
     newImage.shift();
@@ -181,7 +180,9 @@ const updateCourses = async (req, res) => {
     const { id } = req.params;
     const course = await findByIdCourse(id);
     const { name, code, price, desc } = req.body;
-    const image = req.file.path;
+    let image = req.file.path;
+    let newImage = image.split("\\");
+    newImage.shift();
 
     if (!course) {
       return errorClientResponse(res, "Course not found", 404);
@@ -193,7 +194,7 @@ const updateCourses = async (req, res) => {
         cr_code: code,
         cr_price: price,
         cr_desc: desc,
-        cr_image: image,
+        cr_image: newImage.join("\\"),
         updatedAt: new Date(),
       },
       {

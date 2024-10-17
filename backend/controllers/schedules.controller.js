@@ -1,14 +1,28 @@
-const { Schedules } = require("@/models");
+const { Schedules, Courses, Users } = require("@/models");
 const {
   successResponseData,
   successResponse,
   errorServerResponse,
   errorClientResponse,
 } = require("@/helpers/responseHelpers");
+const { where } = require("sequelize");
 
 const getAllSchedules = async (req, res) => {
   try {
-    const Schedule = await Schedules.findAll();
+    const Schedule = await Schedules.findAll({
+      include: [
+        {
+          model: Courses,
+          as: "Courses",
+          through: { attributes: [] },
+          include: {
+            model: Users,
+            as: "Users",
+            through: { attributes: [] },
+          },
+        },
+      ],
+    });
     return successResponseData(res, "Success get all data!", Schedule, 200);
   } catch (error) {
     return errorServerResponse(res, error.message);
@@ -18,6 +32,18 @@ const getAllSchedules = async (req, res) => {
 const findByIdSchedules = async (id) => {
   try {
     const schedule = await Schedules.findOne({
+      include: [
+        {
+          model: Courses,
+          as: "Courses",
+          through: { attributes: [] },
+          include: {
+            model: Users,
+            as: "Users",
+            through: { attributes: [] },
+          },
+        },
+      ],
       where: { sc_id: id },
     });
     return schedule;
@@ -33,6 +59,7 @@ const getByIdSchedules = async (req, res) => {
     if (!schedule) {
       return errorClientResponse(res, `Schedule with id ${id} not found!`, 404);
     }
+
     return successResponseData(
       res,
       `Success get schedule with id ${id}!`,
@@ -71,6 +98,7 @@ const updateSchedule = async (req, res) => {
     const { id } = req.params;
     const { startDate, endDate, location } = req.body;
     const scheduleData = await findByIdSchedules(id);
+    console.log(scheduleData, "scheduleData");
     if (!scheduleData) {
       return errorClientResponse(res, `Schedule with id ${id} not found!`, 404);
     }
