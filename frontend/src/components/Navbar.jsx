@@ -92,26 +92,10 @@ export function MainNavbar() {
                     <ul className="py-2" aria-labelledby="user-menu-button">
                       <li>
                         <a
-                          href="#"
+                          href="/profile"
                           className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
                         >
-                          Dashboard
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
-                        >
-                          Settings
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
-                        >
-                          Earnings
+                          Profile
                         </a>
                       </li>
                       <li>

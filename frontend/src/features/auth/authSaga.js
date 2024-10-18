@@ -2,8 +2,10 @@ import { put, takeLatest } from "redux-saga/effects";
 import {
   loginSuccess,
   loginFailure,
-  getCookieSucces,
+  getCookieSuccess,
   getCookieFailure,
+  getUserByIdSuccess,
+  getUserByIdFailure,
 } from "./authSlice";
 import Cookies from "js-cookie";
 
@@ -43,9 +45,19 @@ function* getCookie() {
   try {
     const cookie = yield Cookies.get("user");
     const userData = JSON.parse(cookie);
-    yield put(getCookieSucces(userData));
+    yield put(getCookieSuccess(userData));
   } catch (error) {
     yield put(getCookieFailure(error.message));
+  }
+}
+
+function* getUserById(action) {
+  try {
+    const response = yield fetch(`${BASE_API}/users/${action.payload}`);
+    const user = yield response.json();
+    yield put(getUserByIdSuccess(user));
+  } catch (error) {
+    yield put(getUserByIdFailure(error.message));
   }
 }
 
@@ -53,4 +65,5 @@ export default function* authSaga() {
   yield takeLatest("auth/loginRequest", login);
   yield takeLatest("auth/getCookieRequest", getCookie);
   yield takeLatest("auth/logoutRequest", logout);
+  yield takeLatest("auth/getUserByIdRequest", getUserById);
 }

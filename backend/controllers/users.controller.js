@@ -32,17 +32,21 @@ const getAllUsersById = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await Users.findOne({
-      include: {
-        model: Courses,
-        as: "Courses",
-        through: { attributes: [] },
-        include: {
-          model: Schedules,
-          as: "Schedules",
-          through: { attributes: [] },
-        },
-      },
       where: { us_id: id },
+      include: [
+        {
+          model: Courses,
+          as: "Courses",
+          through: { attributes: [] },
+          include: [
+            {
+              model: Schedules,
+              as: "Schedules",
+              through: { attributes: [] },
+            },
+          ],
+        },
+      ],
     });
     return successResponseData(res, "Success get all data!", user, 200);
   } catch (error) {
@@ -180,8 +184,6 @@ const updateisDeleteUser = async (req, res) => {
     );
     return successResponse(res, "Success update user!");
   } catch (error) {
-    console.log(error);
-
     return errorServerResponse(res, error.message, 500);
   }
 };

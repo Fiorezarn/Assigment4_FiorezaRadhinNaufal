@@ -1,4 +1,10 @@
-const { Courses, Users, Schedules, CoursesSchedule } = require("@/models");
+const {
+  Courses,
+  Users,
+  Schedules,
+  CoursesSchedule,
+  userCourses,
+} = require("@/models");
 const {
   successResponseData,
   successResponse,
@@ -25,7 +31,7 @@ const getAllCourses = async (req, res) => {
           through: { attributes: [] },
         },
         {
-          attributes: ["sc_id", "sc_date", "sc_location"],
+          attributes: ["sc_id", "sc_start_date", "sc_end_date", "sc_location"],
           model: Schedules,
           as: "Schedules",
           through: { attributes: [] },
@@ -74,7 +80,7 @@ const getCourseById = async (req, res) => {
           through: { attributes: [] },
         },
         {
-          attributes: ["sc_id", "sc_date", "sc_location"],
+          attributes: ["sc_id", "sc_start_date", "sc_end_date", "sc_location"],
           model: Schedules,
           as: "Schedules",
           through: { attributes: [] },
@@ -111,7 +117,6 @@ const createCourses = async (req, res) => {
     let image = req.file.path;
     let newImage = image.split("\\");
     newImage.shift();
-
     const newCourses = await Courses.create({
       cr_name: name,
       cr_code: code,
@@ -121,11 +126,8 @@ const createCourses = async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
     return successResponseData(res, "Create Courses Succes!", newCourses, 201);
   } catch (error) {
-    console.log(error);
-
     return errorServerResponse(res, error.message, 500);
   }
 };
@@ -201,7 +203,6 @@ const updateCourses = async (req, res) => {
         where: { cr_id: id },
       }
     );
-
     return successResponse(res, "Update Course Succes!", 200);
   } catch (error) {
     return errorServerResponse(res, error.message, 500);

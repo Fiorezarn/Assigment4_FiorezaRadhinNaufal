@@ -18,7 +18,6 @@ const storage = (uploadDirs) => {
         file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname);
       cb(null, filename);
 
-      // Copy file to the second directory
       const tempPath = path.join(uploadDirs[0], filename);
       console.log(tempPath, "tempPath");
       uploadDirs.slice(1).forEach((dir) => {

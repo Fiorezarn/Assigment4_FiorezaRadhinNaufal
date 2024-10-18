@@ -5,6 +5,7 @@ export const courseSlice = createSlice({
   initialState: {
     dataId: null,
     data: null,
+    course: null,
     loading: false,
     error: null,
   },
@@ -33,6 +34,18 @@ export const courseSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    registerCourseRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    registerCourseSuccess: (state, action) => {
+      state.loading = false;
+      state.course = action.payload;
+    },
+    registerCourseFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -43,5 +56,8 @@ export const {
   fetchRequestGetByIdCourses,
   fetchSuccessGetByIdCourses,
   fetchFailureGetByIdCourses,
+  registerCourseRequest,
+  registerCourseSuccess,
+  registerCourseFailure,
 } = courseSlice.actions;
 export default courseSlice.reducer;
