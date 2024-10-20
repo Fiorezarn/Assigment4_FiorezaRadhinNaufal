@@ -13,10 +13,6 @@ const { getPagination, getPagingData } = require("../utils/pagination.util");
 const getAllUsers = async (req, res) => {
   try {
     const { search, page = 1, limit = 10 } = req.query;
-    const whereCondition = search
-      ? { us_username: { [Op.like]: `%${search}%` } }
-      : {};
-
     const { limit: limitValue, offset } = getPagination(page, limit);
 
     const users = await Users.findAndCountAll({
@@ -32,7 +28,17 @@ const getAllUsers = async (req, res) => {
         },
       },
       distinct: true,
-      where: whereCondition,
+      where: {
+        isDeleted: 0,
+        ...(search
+          ? {
+              [Op.or]: {
+                us_username: { [Op.like]: `%${search}%` },
+                us_fullname: { [Op.like]: `%${search}%` },
+              },
+            }
+          : {}),
+      },
       limit: limitValue,
       offset,
     });

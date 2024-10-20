@@ -21,6 +21,7 @@ module.exports = {
       us_email: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       us_password: {
         type: Sequelize.STRING,

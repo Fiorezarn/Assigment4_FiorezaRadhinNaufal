@@ -48,14 +48,21 @@ const checkRegisterCourse = async (req, res, next) => {
 };
 
 const checkDuplicates = async (req, res, next) => {
-  const { username } = req.body;
+  const { username, email } = req.body;
   try {
-    const data = await Users.findOne({
+    const name = await Users.findOne({
       where: { us_username: username },
     });
 
-    if (data) {
+    const dataEmail = await Users.findOne({
+      where: { us_email: email },
+    });
+
+    if (name) {
       return errorClientResponse(res, `User with ${username} already exists`);
+    }
+    if (dataEmail) {
+      return errorClientResponse(res, `Email ${email} is already taken`);
     }
     next();
   } catch (error) {

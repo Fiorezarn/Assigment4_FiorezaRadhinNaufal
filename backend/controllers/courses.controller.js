@@ -16,11 +16,10 @@ const { getPagination, getPagingData } = require("../utils/pagination.util");
 
 const getAllCourses = async (req, res) => {
   try {
-    const { search, page, limit } = req.query;
-    const whereCondition = search
-      ? { cr_name: { [Op.like]: `%${search}%` } }
-      : {};
+    const { search, page = 1, limit = 10 } = req.query;
+
     const { limit: limitValue, offset } = getPagination(page, limit);
+
     const courses = await Courses.findAndCountAll({
       attributes: [
         "cr_id",
@@ -44,10 +43,15 @@ const getAllCourses = async (req, res) => {
           through: { attributes: [] },
         },
       ],
-      where: whereCondition,
+      distinct: true,
+      where: {
+        isDeleted: 0,
+        ...(search ? { cr_name: { [Op.like]: `%${search}%` } } : {}),
+      },
       limit: limitValue,
       offset,
     });
+
     const response = getPagingData(courses, page, limitValue);
     return res.status(200).send(response);
   } catch (error) {
