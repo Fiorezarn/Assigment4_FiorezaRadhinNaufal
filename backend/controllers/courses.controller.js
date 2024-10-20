@@ -12,14 +12,16 @@ const {
   errorClientResponse,
 } = require("@/helpers/responseHelpers");
 const { Op } = require("sequelize");
+const { getPagination, getPagingData } = require("../utils/pagination.util");
 
 const getAllCourses = async (req, res) => {
   try {
-    const { search } = req.query;
+    const { search, page, limit } = req.query;
     const whereCondition = search
       ? { cr_name: { [Op.like]: `%${search}%` } }
       : {};
-    const courses = await Courses.findAll({
+    const { limit: limitValue, offset } = getPagination(page, limit);
+    const courses = await Courses.findAndCountAll({
       attributes: [
         "cr_id",
         "cr_name",
@@ -43,8 +45,11 @@ const getAllCourses = async (req, res) => {
         },
       ],
       where: whereCondition,
+      limit: limitValue,
+      offset,
     });
-    return successResponseData(res, "Success get all data!", courses, 200);
+    const response = getPagingData(courses, page, limitValue);
+    return res.status(200).send(response);
   } catch (error) {
     return errorServerResponse(res, error.message, 500);
   }

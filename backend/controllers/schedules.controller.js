@@ -13,9 +13,11 @@ const getAllSchedules = async (req, res) => {
     const isStartDate = new Date(startDate);
     const isEndDate = new Date(endDate);
     const whereCondition =
-      startDate || endDate
+      startDate && endDate
         ? {
-            [Op.between]: [isStartDate, isEndDate],
+            sc_date: {
+              [Op.between]: [isStartDate, isEndDate],
+            },
           }
         : {};
     const Schedule = await Schedules.findAll({
@@ -45,7 +47,6 @@ const getAllSchedules = async (req, res) => {
     });
     return successResponseData(res, "Success get all data!", Schedule, 200);
   } catch (error) {
-    console.log(error);
     return errorServerResponse(res, error.message);
   }
 };
@@ -118,7 +119,6 @@ const updateSchedule = async (req, res) => {
     const { id } = req.params;
     const { date, location } = req.body;
     const scheduleData = await findByIdSchedules(id);
-    console.log(scheduleData, "scheduleData");
     if (!scheduleData) {
       return errorClientResponse(res, `Schedule with id ${id} not found!`, 404);
     }

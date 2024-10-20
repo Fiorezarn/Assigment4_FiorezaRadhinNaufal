@@ -8,14 +8,18 @@ const {
   errorClientResponse,
 } = require("@/helpers/responseHelpers");
 const { Op } = require("sequelize");
+const { getPagination, getPagingData } = require("../utils/pagination.util");
 
 const getAllUsers = async (req, res) => {
   try {
-    const { search } = req.query;
+    const { search, page = 1, limit = 10 } = req.query;
     const whereCondition = search
-      ? { us_fullname: { [Op.like]: `%${search}%` } }
+      ? { us_username: { [Op.like]: `%${search}%` } }
       : {};
-    const users = await Users.findAll({
+
+    const { limit: limitValue, offset } = getPagination(page, limit);
+
+    const users = await Users.findAndCountAll({
       attributes: ["us_id", "us_fullname", "us_username", "us_email"],
       include: {
         model: Courses,
@@ -27,9 +31,14 @@ const getAllUsers = async (req, res) => {
           through: { attributes: [] },
         },
       },
+      distinct: true,
       where: whereCondition,
+      limit: limitValue,
+      offset,
     });
-    return successResponseData(res, "Success get all data!", users, 200);
+
+    const response = getPagingData(users, page, limitValue);
+    return res.status(200).send(response);
   } catch (error) {
     return errorServerResponse(res, error.message, 500);
   }
@@ -176,7 +185,6 @@ const updateUsers = async (req, res) => {
     );
     return successResponse(res, "Success update user!");
   } catch (error) {
-    console.log(error);
     errorServerResponse(res, error.message, 500);
   }
 };

@@ -23,7 +23,6 @@ function CourseContent() {
   const registerCourse = () => {
     const userId = cookie?.us_id;
     const courseId = dataId?.data?.cr_id;
-    console.log(userId, courseId, "ini userId");
     dispatch({ type: "REGISTER_COURSE", payload: { userId, courseId } });
   };
 
@@ -64,7 +63,6 @@ function CourseContent() {
     return <div>Loading...</div>;
   }
   if (error) {
-    console.log(error);
     return <div>Error loading course</div>;
   }
 

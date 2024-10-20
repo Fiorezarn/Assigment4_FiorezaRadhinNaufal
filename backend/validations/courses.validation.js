@@ -22,7 +22,6 @@ const bodyvalidation = async (req, res, next) => {
 const checkDuplicates = async (req, res, next) => {
   const { name } = req.body;
   try {
-    console.log(name, "data nih");
     const data = await Courses.findOne({
       where: { cr_name: name },
     });
@@ -32,7 +31,6 @@ const checkDuplicates = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.log(error);
     return errorServerResponse(res, "Internal server error");
   }
 };

@@ -24,7 +24,6 @@ function Register() {
       const code = isRegister.code;
 
       if (code !== 201) {
-        console.log(code);
         toast.error(isRegister.message, {
           position: "top-right",
           autoClose: 5000,

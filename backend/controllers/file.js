@@ -19,10 +19,8 @@ const storage = (uploadDirs) => {
       cb(null, filename);
 
       const tempPath = path.join(uploadDirs[0], filename);
-      console.log(tempPath, "tempPath");
       uploadDirs.slice(1).forEach((dir) => {
         const destPath = path.join(dir, filename);
-        console.log(destPath, "destPath");
         fs.copyFile(tempPath, destPath, (err) => {
           if (err) {
             console.error(`Error copying file to ${dir}:`, err);

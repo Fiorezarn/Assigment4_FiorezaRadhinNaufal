@@ -50,7 +50,6 @@ function Login() {
   useEffect(() => {
     if (isRegister && !hasShownToast.current) {
       const code = isRegister.code;
-      console.log(code);
       if (code === 201) {
         toast.success(isRegister.message, {
           position: "top-right",
