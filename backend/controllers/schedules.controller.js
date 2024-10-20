@@ -54,12 +54,22 @@ const getAllSchedules = async (req, res) => {
 const findByIdSchedules = async (id) => {
   try {
     const schedule = await Schedules.findOne({
+      attributes: ["sc_id", "sc_date", "sc_location"],
       include: [
         {
+          attributes: [
+            "cr_id",
+            "cr_name",
+            "cr_code",
+            "cr_price",
+            "cr_desc",
+            "cr_image",
+          ],
           model: Courses,
           as: "Courses",
           through: { attributes: [] },
           include: {
+            attributes: ["us_id", "us_fullname", "us_username", "us_email"],
             model: Users,
             as: "Users",
             through: { attributes: [] },

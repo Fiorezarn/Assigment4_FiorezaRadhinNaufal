@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import MainNavbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import locationIcon from "../assets/locationicon.png";
+import Auth from "./Auth";
 function Profile() {
   const dispatch = useDispatch();
   const { userId, cookie } = useSelector((state) => state.auth);
@@ -15,6 +16,7 @@ function Profile() {
 
   return (
     <>
+      <Auth />
       <MainNavbar />
       <div className="flex justify-center px-10 mt-14 gap-5">
         <aside className="w-96 p-4 h-1/2 text-white border-2 rounded-2xl">

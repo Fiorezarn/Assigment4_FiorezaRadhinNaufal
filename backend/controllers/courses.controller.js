@@ -58,23 +58,6 @@ const getAllCourses = async (req, res) => {
 const findByIdCourse = async (id) => {
   try {
     const courses = await Courses.findOne({
-      where: { cr_id: id },
-    });
-    return courses;
-  } catch (error) {
-    return error;
-  }
-};
-
-const getCourseById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const courses = await findByIdCourse(id);
-    if (!courses) {
-      return errorClientResponse(res, "Courses not found", 404);
-    }
-
-    const scheduleCourse = await Courses.findOne({
       attributes: [
         "cr_id",
         "cr_name",
@@ -99,11 +82,23 @@ const getCourseById = async (req, res) => {
       ],
       where: { cr_id: id },
     });
+    return courses;
+  } catch (error) {
+    return error;
+  }
+};
 
+const getCourseById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const courses = await findByIdCourse(id);
+    if (!courses) {
+      return errorClientResponse(res, "Courses not found", 404);
+    }
     return successResponseData(
       res,
       `Success get data with ${id}!`,
-      scheduleCourse,
+      courses,
       200
     );
   } catch (error) {
