@@ -10,6 +10,14 @@ This project is an online course registration system built with Express and Sequ
 ### Back-End
 ![alt text](https://github.com/Fiorezarn/Assigment4_FiorezaRadhinNaufal/blob/main/frontend/src/assets/backend.png)
 
+## Features
+- User Registration & Login: Register new users and authenticate with token-based login.
+- User Management: View, update, soft delete/restore, and permanently delete users.
+- Course Registration: Enroll users in courses and view their course schedules.
+- Pagination & Search: Paginated user listing with search capabilities.
+- Error Handling: Clear and consistent error responses for client- and server-side issues.
+
+
 ## Tech Stack
 
 ### Front-End
