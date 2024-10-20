@@ -4,7 +4,7 @@ const {
   getAllUsers,
   registerUsers,
   loginUsers,
-  getAllUsersById,
+  getUsersById,
   registerCourse,
   updateisDeleteUser,
   updateUsers,
@@ -18,7 +18,7 @@ const {
 } = require("@/validations/users.validation");
 
 router.get("/", getAllUsers);
-router.get("/:id", getAllUsersById);
+router.get("/:id", getUsersById);
 router.patch("/:id", updateisDeleteUser);
 router.put("/:id", bodyvalidationUsers, checkDuplicates, updateUsers);
 router.post("/register", bodyvalidationUsers, checkDuplicates, registerUsers);

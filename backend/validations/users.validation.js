@@ -13,8 +13,9 @@ const bodyvalidationUsers = async (req, res, next) => {
     password: Joi.string().min(8).alphanum().required(),
   });
   const validationError = schema.validate(req.body).error;
+
   if (validationError) {
-    return errorClientResponse(res, validationError.details);
+    return errorClientResponse(res, validationError.details[0].message);
   }
   next();
 };
@@ -26,7 +27,7 @@ const bodyValidationUsersCourse = async (req, res, next) => {
   });
   const validationError = schema.validate(req.body).error;
   if (validationError) {
-    return errorClientResponse(res, validationError.details);
+    return errorClientResponse(res, validationError.details[0].message);
   }
   next();
 };

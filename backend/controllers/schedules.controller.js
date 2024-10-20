@@ -5,26 +5,47 @@ const {
   errorServerResponse,
   errorClientResponse,
 } = require("@/helpers/responseHelpers");
-const { where } = require("sequelize");
+const { Op } = require("sequelize");
 
 const getAllSchedules = async (req, res) => {
   try {
+    const { startDate, endDate } = req.query;
+    const isStartDate = new Date(startDate);
+    const isEndDate = new Date(endDate);
+    const whereCondition =
+      startDate || endDate
+        ? {
+            [Op.between]: [isStartDate, isEndDate],
+          }
+        : {};
     const Schedule = await Schedules.findAll({
+      attributes: ["sc_id", "sc_date", "sc_location"],
       include: [
         {
+          attributes: [
+            "cr_id",
+            "cr_name",
+            "cr_code",
+            "cr_price",
+            "cr_desc",
+            "cr_image",
+          ],
           model: Courses,
           as: "Courses",
           through: { attributes: [] },
           include: {
+            attributes: ["us_id", "us_fullname", "us_username", "us_email"],
             model: Users,
             as: "Users",
             through: { attributes: [] },
           },
         },
       ],
+      where: whereCondition,
     });
     return successResponseData(res, "Success get all data!", Schedule, 200);
   } catch (error) {
+    console.log(error);
     return errorServerResponse(res, error.message);
   }
 };
@@ -73,10 +94,9 @@ const getByIdSchedules = async (req, res) => {
 
 const createSchedules = async (req, res) => {
   try {
-    const { startDate, endDate, location } = req.body;
+    const { date, location } = req.body;
     const newSchedules = await Schedules.create({
-      sc_start_date: startDate,
-      sc_end_date: endDate,
+      sc_date: date,
       sc_location: location,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -96,7 +116,7 @@ const createSchedules = async (req, res) => {
 const updateSchedule = async (req, res) => {
   try {
     const { id } = req.params;
-    const { startDate, endDate, location } = req.body;
+    const { date, location } = req.body;
     const scheduleData = await findByIdSchedules(id);
     console.log(scheduleData, "scheduleData");
     if (!scheduleData) {
@@ -104,8 +124,7 @@ const updateSchedule = async (req, res) => {
     }
     await Schedules.update(
       {
-        sc_start_date: startDate,
-        sc_end_date: endDate,
+        sc_date: date,
         sc_location: location,
         updatedAt: new Date(),
       },

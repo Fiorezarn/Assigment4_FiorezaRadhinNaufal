@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import MainNavbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import Auth from "./Auth";
-
+import locationIcon from "../assets/locationicon.png";
 function Profile() {
   const dispatch = useDispatch();
-  const { user, userId, loading, error } = useSelector((state) => state.auth);
+  const { userId, cookie } = useSelector((state) => state.auth);
 
-  const id = user?.us_id;
+  const id = cookie?.us_id;
+
   useEffect(() => {
     dispatch({ type: "auth/getCookieRequest" });
     dispatch({ type: "auth/getUserByIdRequest", payload: id });
@@ -15,14 +15,32 @@ function Profile() {
 
   return (
     <>
-      <Auth />
       <MainNavbar />
-      <div className="flex px-10 mt-14 gap-5">
-        <aside className="w-96 p-4 h-1/2 border-2 rounded-2xl">
-          <div className="grid gap-4">
-            <p>Name : {user?.us_fullname}</p>
-            <p>Username : {user?.us_username}</p>
-            <p>Email : {user?.us_email}</p>
+      <div className="flex justify-center px-10 mt-14 gap-5">
+        <aside className="w-96 p-4 h-1/2 text-white border-2 rounded-2xl">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            User Information
+          </h2>
+
+          <div className="flex items-center space-x-3">
+            <span className="text-gray-600 font-medium">Name:</span>
+            <p className="text-gray-900">
+              {cookie?.us_fullname || "Not available"}
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <span className="text-gray-600 font-medium">Username:</span>
+            <p className="text-gray-900">
+              {cookie?.us_username || "Not available"}
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <span className="text-gray-600 font-medium">Email:</span>
+            <p className="text-gray-900">
+              {cookie?.us_email || "Not available"}
+            </p>
           </div>
         </aside>
         <div className="flex flex-col gap-10 border-b-2 pb-14 mb-5 border-2 rounded-2xl p-6">
@@ -43,23 +61,23 @@ function Profile() {
                   {course.Schedules?.length > 0 ? (
                     course.Schedules.map((schedule, scheduleIndex) => (
                       <div key={scheduleIndex} className="mt-2 pl-4">
-                        <p className="text-sm">
-                          Location: {schedule.sc_location}
-                        </p>
                         <p className="text-gray-600">
                           {new Intl.DateTimeFormat("id-ID", {
                             dateStyle: "long",
-                          }).format(new Date(schedule.sc_start_date))}
+                          }).format(new Date(schedule.sc_date))}
                           {" | "}
                           {new Intl.DateTimeFormat("id-ID", {
                             hour: "2-digit",
                             minute: "2-digit",
-                          }).format(new Date(schedule.sc_start_date))}
-                          {" - "}
-                          {new Intl.DateTimeFormat("id-ID", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          }).format(new Date(schedule.sc_end_date))}
+                          }).format(new Date(schedule.sc_date))}
+                        </p>
+                        <p className="text-sm font-bold flex gap-2">
+                          <img
+                            className="w-5"
+                            src={locationIcon}
+                            alt="location"
+                          />
+                          {schedule.sc_location}
                         </p>
                       </div>
                     ))

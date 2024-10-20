@@ -7,10 +7,16 @@ const {
   errorServerResponse,
   errorClientResponse,
 } = require("@/helpers/responseHelpers");
+const { Op } = require("sequelize");
 
 const getAllUsers = async (req, res) => {
   try {
+    const { search } = req.query;
+    const whereCondition = search
+      ? { us_fullname: { [Op.like]: `%${search}%` } }
+      : {};
     const users = await Users.findAll({
+      attributes: ["us_id", "us_fullname", "us_username", "us_email"],
       include: {
         model: Courses,
         as: "Courses",
@@ -21,34 +27,9 @@ const getAllUsers = async (req, res) => {
           through: { attributes: [] },
         },
       },
+      where: whereCondition,
     });
     return successResponseData(res, "Success get all data!", users, 200);
-  } catch (error) {
-    return errorServerResponse(res, error.message, 500);
-  }
-};
-
-const getAllUsersById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = await Users.findOne({
-      where: { us_id: id },
-      include: [
-        {
-          model: Courses,
-          as: "Courses",
-          through: { attributes: [] },
-          include: [
-            {
-              model: Schedules,
-              as: "Schedules",
-              through: { attributes: [] },
-            },
-          ],
-        },
-      ],
-    });
-    return successResponseData(res, "Success get all data!", user, 200);
   } catch (error) {
     return errorServerResponse(res, error.message, 500);
   }
@@ -57,9 +38,43 @@ const getAllUsersById = async (req, res) => {
 const findByIdUser = async (id) => {
   try {
     const user = await Users.findOne({
+      attributes: ["us_id", "us_fullname", "us_username", "us_email"],
       where: { us_id: id },
+      include: [
+        {
+          attributes: [
+            "cr_id",
+            "cr_name",
+            "cr_code",
+            "cr_price",
+            "cr_desc",
+            "cr_image",
+          ],
+          model: Courses,
+          as: "Courses",
+          through: { attributes: [] },
+          include: [
+            {
+              attributes: ["sc_id", "sc_date", "sc_location"],
+              model: Schedules,
+              as: "Schedules",
+              through: { attributes: [] },
+            },
+          ],
+        },
+      ],
     });
     return user;
+  } catch (error) {
+    return errorServerResponse(res, error.message, 500);
+  }
+};
+
+const getUsersById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await findByIdUser(id);
+    return successResponseData(res, "Success get all data!", user, 200);
   } catch (error) {
     return errorServerResponse(res, error.message, 500);
   }
@@ -208,7 +223,7 @@ module.exports = {
   getAllUsers,
   registerUsers,
   loginUsers,
-  getAllUsersById,
+  getUsersById,
   registerCourse,
   updateisDeleteUser,
   deleteUser,

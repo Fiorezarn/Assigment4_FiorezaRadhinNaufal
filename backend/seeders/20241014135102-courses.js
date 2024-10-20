@@ -11,7 +11,7 @@ module.exports = {
           cr_name: "Python",
           cr_code: "PY01",
           cr_price: 1000000,
-          cr_image: `images\python.webp`,
+          cr_image: "images\\python.webp",
           cr_desc:
             "Python is an interpreted high-level general-purpose programming language",
           createdAt: new Date(),
@@ -22,7 +22,7 @@ module.exports = {
           cr_name: "Typescript",
           cr_code: "TS01",
           cr_price: 1000000,
-          cr_image: "images\ts.png",
+          cr_image: "images\\ts.png",
           cr_desc:
             "Typescript is a programming language developed by Microsoft",
           createdAt: new Date(),
@@ -33,7 +33,7 @@ module.exports = {
           cr_name: "Javascript",
           cr_code: "JS01",
           cr_price: 1000000,
-          cr_image: `images\javascript.png`,
+          cr_image: `images\\javascript.png`,
           cr_desc: "Javascript is a programming language developed by Netscape",
           createdAt: new Date(),
           updatedAt: new Date(),

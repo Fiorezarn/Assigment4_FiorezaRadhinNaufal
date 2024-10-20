@@ -8,11 +8,7 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      sc_start_date: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      sc_end_date: {
+      sc_date: {
         type: Sequelize.DATE,
         allowNull: false,
       },

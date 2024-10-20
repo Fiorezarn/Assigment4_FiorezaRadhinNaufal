@@ -11,9 +11,14 @@ const {
   errorServerResponse,
   errorClientResponse,
 } = require("@/helpers/responseHelpers");
+const { Op } = require("sequelize");
 
 const getAllCourses = async (req, res) => {
   try {
+    const { search } = req.query;
+    const whereCondition = search
+      ? { cr_name: { [Op.like]: `%${search}%` } }
+      : {};
     const courses = await Courses.findAll({
       attributes: [
         "cr_id",
@@ -31,12 +36,13 @@ const getAllCourses = async (req, res) => {
           through: { attributes: [] },
         },
         {
-          attributes: ["sc_id", "sc_start_date", "sc_end_date", "sc_location"],
+          attributes: ["sc_id", "sc_date", "sc_location"],
           model: Schedules,
           as: "Schedules",
           through: { attributes: [] },
         },
       ],
+      where: whereCondition,
     });
     return successResponseData(res, "Success get all data!", courses, 200);
   } catch (error) {
@@ -80,7 +86,7 @@ const getCourseById = async (req, res) => {
           through: { attributes: [] },
         },
         {
-          attributes: ["sc_id", "sc_start_date", "sc_end_date", "sc_location"],
+          attributes: ["sc_id", "sc_date", "sc_location"],
           model: Schedules,
           as: "Schedules",
           through: { attributes: [] },

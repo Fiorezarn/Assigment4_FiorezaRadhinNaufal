@@ -1,36 +1,31 @@
-import MainNavbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { toast, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useRef } from "react";
+import MainNavbar from "../components/Navbar";
+import { Bounce, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-function Login() {
-  const dispatch = useDispatch();
+function Register() {
   const navigate = useNavigate();
-  const hasShownToast = useRef(false);
-  const { user, isRegister, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
-
+  const dispatch = useDispatch();
+  const { loading, error, isRegister } = useSelector((state) => state.auth);
   const handleSubmit = (e) => {
     e.preventDefault();
+    const fullname = e.target.fullname.value;
     const username = e.target.username.value;
+    const email = e.target.email.value;
     const password = e.target.password.value;
-    dispatch({ type: "auth/loginRequest", payload: { username, password } });
+    dispatch({
+      type: "auth/registerRequest",
+      payload: { fullname, username, email, password },
+    });
   };
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);
+    if (isRegister) {
+      const code = isRegister.code;
 
-  useEffect(() => {
-    if (user) {
-      const json = user;
-      const code = json.code;
-      if (code !== 200) {
-        toast.error(json.message, {
+      if (code !== 201) {
+        console.log(code);
+        toast.error(isRegister.message, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -42,28 +37,7 @@ function Login() {
           transition: Bounce,
         });
       } else {
-        navigate("/");
-      }
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (isRegister && !hasShownToast.current) {
-      const code = isRegister.code;
-      console.log(code);
-      if (code === 201) {
-        toast.success(isRegister.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-        hasShownToast.current = true;
+        navigate("/login");
       }
     }
   }, [isRegister]);
@@ -72,21 +46,49 @@ function Login() {
       <MainNavbar />
       <div className="mt-28">
         <form
-          className="max-w-sm mx-auto border-2 p-4 rounded-md border-blue-800 flex flex-col"
+          className="max-w-sm mx-auto border-2 p-4 rounded-md border-blue-800"
           onSubmit={handleSubmit}
         >
+          <div className="mb-5">
+            <label
+              htmlFor="fullname"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Fullname
+            </label>
+            <input
+              type="text"
+              id="fullname"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="name@flowbite.com"
+              required
+            />
+          </div>
           <div className="mb-5">
             <label
               htmlFor="username"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-              Your username
+              Username
             </label>
             <input
-              type="text"
+              type="username"
               id="username"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="name@flowbite.com"
+              required
+            />
+          </div>
+          <div className="mb-5">
+            <label
+              htmlFor="email"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Gmail
+            </label>
+            <input
+              type="email"
+              id="email"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               required
             />
           </div>
@@ -95,7 +97,7 @@ function Login() {
               htmlFor="password"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-              Your password
+              Password
             </label>
             <input
               type="password"
@@ -104,9 +106,7 @@ function Login() {
               required
             />
           </div>
-          <a className="text-black mb-5" href="/register">
-            Don't have an account?
-          </a>
+
           <button
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -119,4 +119,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

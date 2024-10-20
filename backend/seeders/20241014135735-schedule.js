@@ -8,24 +8,21 @@ module.exports = {
       [
         {
           sc_id: 1,
-          sc_start_date: new Date("2024-11-01 07:00:00"),
-          sc_end_date: new Date("2024-11-01 16:00:00"),
+          sc_date: new Date("2024-11-01 07:00:00"),
           sc_location: "Bandung",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           sc_id: 2,
-          sc_start_date: new Date("2024-12-01 07:00:00"),
-          sc_end_date: new Date("2024-12-01 16:00:00"),
+          sc_date: new Date("2024-12-01 07:00:00"),
           sc_location: "Surabaya",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           sc_id: 3,
-          sc_start_date: new Date("2024-12-01 07:00:00"),
-          sc_end_date: new Date("2024-12-01 16:00:00"),
+          sc_date: new Date("2024-12-01 07:00:00"),
           sc_location: "Jakarta",
           createdAt: new Date(),
           updatedAt: new Date(),

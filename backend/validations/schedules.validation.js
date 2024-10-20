@@ -19,12 +19,11 @@ const bodyvalidation = async (req, res, next) => {
 };
 
 const checkDuplicates = async (req, res, next) => {
-  const { startDate, endDate, location } = req.body;
+  const { date, location } = req.body;
   try {
     const data = await Schedules.findOne({
       where: {
-        sc_start_date: startDate,
-        sc_end_date: endDate,
+        sc_date: date,
         sc_location: location,
       },
     });

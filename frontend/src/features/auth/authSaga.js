@@ -6,21 +6,22 @@ import {
   getCookieFailure,
   getUserByIdSuccess,
   getUserByIdFailure,
+  logoutSuccess,
+  registerSuccess,
+  registerFailure,
 } from "./authSlice";
 import Cookies from "js-cookie";
+import { fetchLogin, fetchRegister } from "./authApi";
 
 const BASE_API = import.meta.env.VITE_BASE_URL_BE;
 
-async function fetchLogin({ username, password }) {
-  const response = await fetch(`${BASE_API}/users/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify({ username, password }),
-  });
-  return await response.json();
+function* register(action) {
+  try {
+    const response = yield fetchRegister(action.payload);
+    yield put(registerSuccess(response));
+  } catch (error) {
+    yield put(registerFailure(error.message));
+  }
 }
 
 function* login(action) {
@@ -35,7 +36,7 @@ function* login(action) {
 function* logout() {
   try {
     yield Cookies.remove("user");
-    yield put(loginSuccess(null));
+    yield put(logoutSuccess());
   } catch {
     yield put(loginFailure("Failed to logout"));
   }
@@ -66,4 +67,5 @@ export default function* authSaga() {
   yield takeLatest("auth/getCookieRequest", getCookie);
   yield takeLatest("auth/logoutRequest", logout);
   yield takeLatest("auth/getUserByIdRequest", getUserById);
+  yield takeLatest("auth/registerRequest", register);
 }
