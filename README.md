@@ -2,6 +2,14 @@
 
 This project is an online course registration system built with Express and Sequelize, allowing users to sign up, select courses, and view schedules. It utilizes a MySQL database for data storage, ensuring efficient data management and effective error handling.
 
+## Demo
+
+### Front-End
+![alt text](https://github.com/Fiorezarn/Assigment4_FiorezaRadhinNaufal/blob/main/frontend/src/assets/frontend.png)
+
+### Back-End
+![alt text](https://github.com/Fiorezarn/Assigment4_FiorezaRadhinNaufal/blob/main/frontend/src/assets/backend.png)
+
 ## Tech Stack
 
 ### Front-End
